@@ -10,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.infestedstudios.inv.utils.ItemBuilder;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -31,6 +32,7 @@ public class InfestedInv implements InventoryHolder {
     private final Inventory inventory;
 
     private Predicate<Player> closeFilter;
+    private int updateTaskId = -1;
 
     /**
      * Create a new InfestedInv with a custom size.
@@ -133,6 +135,15 @@ public class InfestedInv implements InventoryHolder {
     }
 
     /**
+     * Add an item using ItemBuilder to the inventory in the first empty slot.
+     *
+     * @param builder The ItemBuilder to build the item.
+     */
+    public void addItem(ItemBuilder builder) {
+        addItem(builder.build(), builder.getClickHandler());
+    }
+
+    /**
      * Set an item in a specific slot.
      *
      * @param slot The slot to set the item in.
@@ -152,6 +163,16 @@ public class InfestedInv implements InventoryHolder {
     public void setItem(int slot, ItemStack item, Consumer<InventoryClickEvent> handler) {
         this.inventory.setItem(slot, item);
         setItemHandler(slot, handler);
+    }
+
+    /**
+     * Set an item in a specific slot using ItemBuilder.
+     *
+     * @param slot    The slot to set the item in.
+     * @param builder The ItemBuilder to build the item.
+     */
+    public void setItem(int slot, ItemBuilder builder) {
+        setItem(slot, builder.build(), builder.getClickHandler());
     }
 
     /**
@@ -394,12 +415,23 @@ public class InfestedInv implements InventoryHolder {
     }
 
     /**
-     * Update the inventory content every tick.
+     * Start updating the inventory content every tick.
      *
-     * @param plugin The plugin instance.
+     * @param plugin         The plugin instance.
      * @param updateFunction The function to update the inventory.
      */
     public void startUpdating(Plugin plugin, Runnable updateFunction) {
-        Bukkit.getScheduler().runTaskTimer(plugin, updateFunction, 0L, 1L);
+        stopUpdating();
+        this.updateTaskId = Bukkit.getScheduler().runTaskTimer(plugin, updateFunction, 0L, 1L).getTaskId();
+    }
+
+    /**
+     * Stop updating the inventory content.
+     */
+    public void stopUpdating() {
+        if (this.updateTaskId != -1) {
+            Bukkit.getScheduler().cancelTask(this.updateTaskId);
+            this.updateTaskId = -1;
+        }
     }
 }

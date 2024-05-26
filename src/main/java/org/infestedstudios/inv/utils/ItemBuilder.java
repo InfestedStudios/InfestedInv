@@ -1,31 +1,9 @@
-/*
- * This file is part of FastInv, licensed under the MIT License.
- *
- * Copyright (c) 2018-2021 MrMicky
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package org.infestedstudios.inv.utils;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -45,6 +23,7 @@ import java.util.function.Consumer;
 public class ItemBuilder {
 
     private final ItemStack item;
+    private Consumer<InventoryClickEvent> clickHandler;
 
     public static ItemBuilder copyOf(ItemStack item) {
         return new ItemBuilder(item.clone());
@@ -183,7 +162,16 @@ public class ItemBuilder {
         return meta(LeatherArmorMeta.class, meta -> meta.setColor(color));
     }
 
+    public ItemBuilder setClickHandler(Consumer<InventoryClickEvent> handler) {
+        this.clickHandler = handler;
+        return this;
+    }
+
     public ItemStack build() {
         return this.item;
+    }
+
+    public Consumer<InventoryClickEvent> getClickHandler() {
+        return clickHandler;
     }
 }
