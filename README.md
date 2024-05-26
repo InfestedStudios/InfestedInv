@@ -106,8 +106,8 @@ Small example inventory:
 ```java
 package fr.mrmicky.fastinv.test;
 
-import fr.mrmicky.fastinv.FastInv;
-import fr.mrmicky.fastinv.ItemBuilder;
+import org.infestedstudios.inv.InfestedInv;
+import org.infestedstudios.inv.utils.ItemBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
