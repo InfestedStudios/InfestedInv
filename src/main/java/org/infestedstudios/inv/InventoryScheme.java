@@ -1,4 +1,4 @@
-package fr.mrmicky.fastinv;
+package org.infestedstudios.inv;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -89,7 +89,7 @@ public class InventoryScheme {
      *
      * @param inv the FastInv instance to apply this scheme to
      */
-    public void apply(FastInv inv) {
+    public void apply(InfestedInv inv) {
         for (int line = 0; line < this.masks.size(); line++) {
             String mask = this.masks.get(line);
 

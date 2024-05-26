@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package fr.mrmicky.fastinv;
+package org.infestedstudios.inv.utils;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
