@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.infestedstudios.inv.InfestedInv;
+import org.infestedstudios.inv.utils.ItemBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class PaginatedInfestedInv extends InfestedInv {
      * Adds a new empty page to the paginated inventory.
      */
     private void addPage() {
-        pages.add(Bukkit.createInventory(this, getInventory().getSize(), getInventory().getType().name()));
+        pages.add(Bukkit.createInventory(null, getInventory().getSize(), getInventory().getType().name()));
     }
 
     /**
@@ -76,6 +76,15 @@ public class PaginatedInfestedInv extends InfestedInv {
             currentInventory.setItem(slot, item);
             setItemHandler(slot + ((pages.size() - 1) * getInventory().getSize()), handler);
         }
+    }
+
+    /**
+     * Adds an item to the current page using ItemBuilder.
+     *
+     * @param builder The ItemBuilder to build the item.
+     */
+    public void addItemToPage(ItemBuilder builder) {
+        addItemToPage(builder.build(), builder.getClickHandler());
     }
 
     @Override

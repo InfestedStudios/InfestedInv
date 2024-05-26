@@ -7,7 +7,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.infestedstudios.inv.utils.ItemBuilder;
@@ -22,7 +21,7 @@ import java.util.stream.IntStream;
  * Lightweight and easy-to-use inventory API for Bukkit plugins.
  * This class serves as the base for creating custom inventories with additional functionality.
  */
-public class InfestedInv implements InventoryHolder {
+public class InfestedInv {
 
     private final Map<Integer, Consumer<InventoryClickEvent>> itemHandlers = new HashMap<>();
     private final List<Consumer<InventoryOpenEvent>> openHandlers = new ArrayList<>();
@@ -40,7 +39,7 @@ public class InfestedInv implements InventoryHolder {
      * @param size The size of the inventory.
      */
     public InfestedInv(int size) {
-        this(owner -> Bukkit.createInventory(owner, size));
+        this(Bukkit.createInventory(null, size));
     }
 
     /**
@@ -50,7 +49,7 @@ public class InfestedInv implements InventoryHolder {
      * @param title The title (name) of the inventory.
      */
     public InfestedInv(int size, String title) {
-        this(owner -> Bukkit.createInventory(owner, size, title));
+        this(Bukkit.createInventory(null, size, title));
     }
 
     /**
@@ -59,7 +58,7 @@ public class InfestedInv implements InventoryHolder {
      * @param type The type of the inventory.
      */
     public InfestedInv(InventoryType type) {
-        this(owner -> Bukkit.createInventory(owner, type));
+        this(Bukkit.createInventory(null, type));
     }
 
     /**
@@ -69,23 +68,17 @@ public class InfestedInv implements InventoryHolder {
      * @param title The title of the inventory.
      */
     public InfestedInv(InventoryType type, String title) {
-        this(owner -> Bukkit.createInventory(owner, type, title));
+        this(Bukkit.createInventory(null, type, title));
     }
 
     /**
-     * Create a new InfestedInv with a custom inventory function.
+     * Create a new InfestedInv with a given inventory.
      *
-     * @param inventoryFunction The function to create the inventory.
+     * @param inventory The inventory to be used.
      */
-    public InfestedInv(Function<InventoryHolder, Inventory> inventoryFunction) {
-        Objects.requireNonNull(inventoryFunction, "inventoryFunction");
-        Inventory inv = inventoryFunction.apply(this);
-
-        if (inv.getHolder() != this) {
-            throw new IllegalStateException("Inventory holder is not InfestedInv, found: " + inv.getHolder());
-        }
-
-        this.inventory = inv;
+    public InfestedInv(Inventory inventory) {
+        Objects.requireNonNull(inventory, "inventory");
+        this.inventory = inventory;
     }
 
     /**
@@ -265,7 +258,7 @@ public class InfestedInv implements InventoryHolder {
     /**
      * Add a handler for inventory close events.
      *
-     * @param closeHandler The close handler to add.
+     * @param closeHandler The handler to add.
      */
     public void addCloseHandler(Consumer<InventoryCloseEvent> closeHandler) {
         this.closeHandlers.add(closeHandler);
@@ -274,7 +267,7 @@ public class InfestedInv implements InventoryHolder {
     /**
      * Add a handler for inventory click events.
      *
-     * @param clickHandler The click handler to add.
+     * @param clickHandler The handler to add.
      */
     public void addClickHandler(Consumer<InventoryClickEvent> clickHandler) {
         this.clickHandlers.add(clickHandler);
@@ -359,11 +352,6 @@ public class InfestedInv implements InventoryHolder {
         }
     }
 
-    @Override
-    public Inventory getInventory() {
-        return this.inventory;
-    }
-
     /**
      * Handle inventory open events.
      *
@@ -433,5 +421,9 @@ public class InfestedInv implements InventoryHolder {
             Bukkit.getScheduler().cancelTask(this.updateTaskId);
             this.updateTaskId = -1;
         }
+    }
+
+    public Inventory getInventory() {
+        return this.inventory;
     }
 }
